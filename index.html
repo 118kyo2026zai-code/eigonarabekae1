@@ -83,16 +83,17 @@
         }
 
         .name-input {
-            border-bottom: 2px solid #333;
+            border: 2px solid #ccc;
             display: inline-block;
             width: 300px;
-            height: 30px;
+            height: 40px;
+            border-radius: 8px;
         }
 
         .problem-item {
-            margin-bottom: 30px;
+            margin-bottom: 50px;
             border-bottom: 1px dotted #ccc;
-            padding-bottom: 20px;
+            padding-bottom: 30px;
         }
 
         .number-box {
@@ -147,7 +148,7 @@
 
         .answer-box {
             width: 140px;
-            height: 50px;
+            height: 60px;
             border: 2px solid #333;
             border-radius: 4px;
             margin-top: 5px;
@@ -187,10 +188,10 @@
 
 <script>
     const defaultProblems = 
-"わたしは,ばななを,食べる|I,bananas,eat\nあなたは,りんごが,好き|You,apples,like\nぼくは,本を,よむ|I,books,read\nかれは,サッカーを,する|He,soccer,play";
+"わたしは,ばななを,食べる|I,bananas,eat\nあなたは,りんごが,好き|You,apples,like\nぼくは,本を,よむ|I,books,read";
 
     function copyPrompt() {
-        const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は、日本語の並びに合わせて、対応する英単語をカンマ区切りで並べる（語順の正解とは限らない）・SVOの文で4個作成する";
+        const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は、日本語の並びに合わせて、対応する英単語をカンマ区切りで並べる（語順の正解とは限らない）・SVOの文で3個作成する";
         navigator.clipboard.writeText(prompt);
         alert("プロンプトをコピーしました！AIに貼り付けてください。");
     }
