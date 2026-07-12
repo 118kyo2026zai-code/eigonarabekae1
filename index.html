@@ -151,6 +151,26 @@
             margin-top: 5px;
         }
 
+        .review-section {
+            margin-top: 30px;
+            padding: 15px;
+            border: 2px solid #4a90e2;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .review-title {
+            font-weight: bold;
+            font-size: 14pt;
+            margin-bottom: 10px;
+            color: #4a90e2;
+        }
+
+        .review-item {
+            font-size: 14pt;
+            margin-bottom: 5px;
+        }
+
         @media print {
             .control-panel { display: none; }
             body { background-color: white; }
@@ -179,6 +199,12 @@
         <h1>英語並べ替え問題</h1>
         <div class="name-section">なまえ（<span class="name-input"></span>）</div>
         <div class="problem-list" id="problemList">
+        </div>
+        
+        <div class="review-section">
+            <div class="review-title">みなおしチェック</div>
+            <div class="review-item"><input type="checkbox"> ピリオドはつけましたか？</div>
+            <div class="review-item"><input type="checkbox"> 最初の文字は大文字にしましたか？</div>
         </div>
     </div>
 </div>
