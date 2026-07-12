@@ -112,6 +112,7 @@
 
         .japanese-cards {
             display: inline-block;
+            margin-bottom: 10px;
         }
 
         .word-card {
@@ -197,6 +198,14 @@
     const defaultProblems = 
 "わたしは,ばななを,食べる|I,eat,bananas\nあなたは,りんごが,好き|You,like,apples\nぼくは,本を,よむ|I,read,books";
 
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
     function copyPrompt() {
         const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は英文を構成する単語をカンマ区切りで並べる・SVOの文で3個作成する";
         navigator.clipboard.writeText(prompt);
@@ -220,6 +229,8 @@
             const jpWords = parts[0].split(',');
             const engWords = parts[1] ? parts[1].split(',') : [];
             
+            const shuffledEng = shuffle([...engWords]);
+            
             const div = document.createElement('div');
             div.className = 'problem-item';
             
@@ -227,7 +238,7 @@
             jpWords.forEach(w => { jpCards += '<span class="word-card">' + w + '</span>'; });
             
             let engCards = '';
-            engWords.forEach(w => { engCards += '<span class="eng-card">' + w + '</span>'; });
+            shuffledEng.forEach(w => { engCards += '<span class="eng-card">' + w + '</span>'; });
             
             let answerRows = '';
             engWords.forEach((_, i) => {
