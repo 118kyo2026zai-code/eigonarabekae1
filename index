@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>英語語順・英単語並べ替えプリント</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            font-family: sans-serif;
+            box-sizing: border-box;
+        }
+
+        .control-panel {
+            width: 210mm;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+            font-size: 16px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .button-group {
+            margin-bottom: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            cursor: pointer;
+            background: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button.print-btn {
+            background: #27ae60;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            padding: 10mm;
+            margin: 10mm auto;
+            background-color: white;
+            box-sizing: border-box;
+            border: 5px solid #4a90e2;
+            position: relative;
+        }
+
+        .inner-border {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #4a90e2;
+            padding: 10mm;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 24pt;
+            margin: 0 0 20px 0;
+            color: #2c3e50;
+        }
+
+        .name-section {
+            text-align: right;
+            font-size: 14pt;
+            margin-bottom: 20px;
+        }
+
+        .name-input {
+            border-bottom: 2px solid #333;
+            display: inline-block;
+            width: 300px;
+            height: 30px;
+        }
+
+        .problem-item {
+            margin-bottom: 40px;
+            border-bottom: 1px dotted #ccc;
+            padding-bottom: 20px;
+        }
+
+        .number-box {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            border: 3px solid #4a90e2;
+            color: #4a90e2;
+            border-radius: 8px;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 14pt;
+            vertical-align: middle;
+        }
+
+        .japanese-cards {
+            display: inline-block;
+        }
+
+        .word-card {
+            border: 2px solid #555;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background-color: #f2f2f2;
+            font-size: 14pt;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .english-cards {
+            margin: 10px 0 10px 45px;
+            background-color: #e8f4fd;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .eng-card {
+            border: 2px solid #4a90e2;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background-color: white;
+            font-size: 16pt;
+            font-weight: bold;
+            margin-right: 10px;
+            display: inline-block;
+        }
+
+        .answer-area {
+            margin-left: 45px;
+            margin-top: 10px;
+        }
+
+        .answer-row {
+            display: inline-block;
+            margin-right: 15px;
+            text-align: center;
+        }
+
+        .answer-box {
+            width: 40px;
+            height: 30px;
+            border: 2px solid #333;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+
+        @media print {
+            .control-panel { display: none; }
+            body { background-color: white; }
+            .page { 
+                margin: 0; 
+                box-shadow: none; 
+                -webkit-print-color-adjust: exact;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="control-panel">
+    <div class="button-group">
+        <button onclick="copyPrompt()">AIプロンプトをコピー</button>
+        <button onclick="resetToDefault()">デフォルトに戻す</button>
+        <button class="print-btn" onclick="window.print()">印刷する</button>
+    </div>
+    <p>入力形式：日本語文|英単語1,英単語2,英単語3（改行で区切る）</p>
+    <textarea id="problemInput" oninput="generateWorksheet()"></textarea>
+</div>
+
+<div class="page" id="printArea">
+    <div class="inner-border">
+        <h1>英語並べ替え問題</h1>
+        <div class="name-section">なまえ（<span class="name-input"></span>）</div>
+        <div class="problem-list" id="problemList">
+        </div>
+    </div>
+</div>
+
+<script>
+    const defaultProblems = 
+"わたしは,ばななを,食べる|I,eat,bananas\nあなたは,りんごが,好き|You,like,apples\nぼくは,本を,よむ|I,read,books";
+
+    function copyPrompt() {
+        const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は英文を構成する単語をカンマ区切りで並べる・SVOの文で3個作成する";
+        navigator.clipboard.writeText(prompt);
+        alert("プロンプトをコピーしました！AIに貼り付けてください。");
+    }
+
+    function resetToDefault() {
+        document.getElementById('problemInput').value = defaultProblems;
+        generateWorksheet();
+    }
+
+    function generateWorksheet() {
+        const input = document.getElementById('problemInput').value;
+        const list = document.getElementById('problemList');
+        list.innerHTML = '';
+        
+        const lines = input.split('\n');
+        lines.forEach((line, index) => {
+            if (line.trim() === '') return;
+            const parts = line.split('|');
+            const jpWords = parts[0].split(',');
+            const engWords = parts[1] ? parts[1].split(',') : [];
+            
+            const div = document.createElement('div');
+            div.className = 'problem-item';
+            
+            let jpCards = '';
+            jpWords.forEach(w => { jpCards += '<span class="word-card">' + w + '</span>'; });
+            
+            let engCards = '';
+            engWords.forEach(w => { engCards += '<span class="eng-card">' + w + '</span>'; });
+            
+            let answerRows = '';
+            engWords.forEach((_, i) => {
+                answerRows += '<div class="answer-row"><div>(' + (i + 1) + ')</div><div class="answer-box"></div></div>';
+            });
+            
+            div.innerHTML = 
+                '<div class="number-box">' + (index + 1) + '</div>' +
+                '<div class="japanese-cards">' + jpCards + '</div>' +
+                '<div class="english-cards">' + engCards + '</div>' +
+                '<div class="answer-area">' + answerRows + '</div>';
+            list.appendChild(div);
+        });
+    }
+
+    resetToDefault();
+</script>
+</body>
+</html>
