@@ -67,6 +67,8 @@
             border: 2px solid #4a90e2;
             padding: 10mm;
             box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
         }
 
         h1 {
@@ -87,10 +89,14 @@
             width: 300px;
         }
 
+        .problem-list {
+            flex-grow: 1;
+        }
+
         .problem-item {
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             border-bottom: 1px dotted #ccc;
-            padding-bottom: 30px;
+            padding-bottom: 20px;
         }
 
         .number-box {
@@ -116,7 +122,7 @@
         }
 
         .hint-text {
-            font-size: 16pt;
+            font-size: 14pt;
             font-weight: bold;
             color: #d35400;
             margin-bottom: 5px;
@@ -124,17 +130,17 @@
 
         .word-card {
             border: 2px solid #555;
-            padding: 8px 16px;
+            padding: 8px 12px;
             border-radius: 8px;
             background-color: #f2f2f2;
-            font-size: 16pt;
+            font-size: 14pt;
             font-weight: bold;
             display: block;
         }
 
         .answer-area {
             margin-left: 45px;
-            margin-top: 20px;
+            margin-top: 15px;
         }
 
         .answer-row {
@@ -144,16 +150,16 @@
         }
 
         .answer-box {
-            width: 140px;
-            height: 60px;
+            width: 120px;
+            height: 50px;
             border: 2px solid #333;
             border-radius: 4px;
             margin-top: 5px;
         }
 
         .review-section {
-            margin-top: 30px;
-            padding: 15px;
+            margin-top: 10px;
+            padding: 10px;
             border: 2px solid #4a90e2;
             border-radius: 8px;
             background-color: #f9f9f9;
@@ -162,13 +168,13 @@
         .review-title {
             font-weight: bold;
             font-size: 14pt;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             color: #4a90e2;
         }
 
         .review-item {
             font-size: 14pt;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         @media print {
@@ -198,8 +204,7 @@
     <div class="inner-border">
         <h1>英語並べ替え問題</h1>
         <div class="name-section">なまえ（<span class="name-input"></span>）</div>
-        <div class="problem-list" id="problemList">
-        </div>
+        <div class="problem-list" id="problemList"></div>
         
         <div class="review-section">
             <div class="review-title">みなおしチェック</div>
@@ -214,7 +219,7 @@
 "わたしは,ばななを,食べる|I,a banana,eat\nあなたは,りんごが,好き|You,an apple,like\nぼくは,本を,よむ|I,a book,read";
 
     function copyPrompt() {
-        const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は、日本語の並びに合わせて、対応する英単語をカンマ区切りで並べる（語順の正解とは限らない）・冠詞(a, an, the)が名詞につく場合は、冠詞と名詞の間はカンマで区切らずにスペースを入れて1つの単語として扱ってください（例: a banana）・SVOの文で3個作成する";
+        const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は、ランダムに並べ替えること（語順のヒントにならないようにする）・冠詞(a, an, the)が名詞につく場合は、冠詞と名詞の間はカンマで区切らずにスペースを入れて1つの単語として扱ってください（例: a banana）・SVOの文で3個作成する";
         navigator.clipboard.writeText(prompt);
         alert("プロンプトをコピーしました！AIに貼り付けてください。");
     }
@@ -236,14 +241,16 @@
             const jpWords = parts[0].split(',');
             const engWords = parts[1] ? parts[1].split(',') : [];
             
+            const shuffledHints = [...engWords].sort(() => Math.random() - 0.5);
+            
             const div = document.createElement('div');
             div.className = 'problem-item';
             
             let wordGroups = '';
-            for(let i = 0; i < jpWords.length; i++) {
+            for(let i = 0; i < shuffledHints.length; i++) {
                 wordGroups += '<div class="word-group">' +
-                                '<div class="hint-text">' + (engWords[i] || '') + '</div>' +
-                                '<div class="word-card">' + jpWords[i] + '</div>' +
+                                '<div class="hint-text">' + (shuffledHints[i] || '') + '</div>' +
+                                '<div class="word-card">' + (jpWords[i] || '') + '</div>' +
                               '</div>';
             }
             
