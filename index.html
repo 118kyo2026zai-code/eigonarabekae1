@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>英語語順・英単語並べ替えプリント</title>
+    <title>英語語順・英単語ヒント付きプリント</title>
     <style>
         html, body {
             margin: 0;
@@ -110,42 +110,33 @@
             vertical-align: middle;
         }
 
-        .japanese-cards {
+        .word-group {
             display: inline-block;
-            margin-bottom: 10px;
+            vertical-align: top;
+            margin-right: 10px;
+            text-align: center;
+        }
+
+        .hint-text {
+            font-size: 14pt;
+            font-weight: bold;
+            color: #d35400;
+            margin-bottom: 2px;
         }
 
         .word-card {
             border: 2px solid #555;
-            padding: 4px 12px;
+            padding: 6px 12px;
             border-radius: 8px;
             background-color: #f2f2f2;
             font-size: 14pt;
             font-weight: bold;
-            margin-right: 5px;
-        }
-
-        .english-cards {
-            margin: 10px 0 10px 45px;
-            background-color: #e8f4fd;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .eng-card {
-            border: 2px solid #4a90e2;
-            padding: 4px 12px;
-            border-radius: 8px;
-            background-color: white;
-            font-size: 16pt;
-            font-weight: bold;
-            margin-right: 10px;
-            display: inline-block;
+            display: block;
         }
 
         .answer-area {
             margin-left: 45px;
-            margin-top: 10px;
+            margin-top: 15px;
         }
 
         .answer-row {
@@ -155,8 +146,8 @@
         }
 
         .answer-box {
-            width: 40px;
-            height: 30px;
+            width: 60px;
+            height: 35px;
             border: 2px solid #333;
             border-radius: 4px;
             margin-top: 5px;
@@ -196,18 +187,10 @@
 
 <script>
     const defaultProblems = 
-"わたしは,ばななを,食べる|I,eat,bananas\nあなたは,りんごが,好き|You,like,apples\nぼくは,本を,よむ|I,read,books";
-
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
-        }
-        return array;
-    }
+"わたしは,ばななを,食べる|I,bananas,eat\nあなたは,りんごが,好き|You,apples,like\nぼくは,本を,よむ|I,books,read";
 
     function copyPrompt() {
-        const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は英文を構成する単語をカンマ区切りで並べる・SVOの文で3個作成する";
+        const prompt = "以下の条件で、英語並べ替え問題のデータを作成してください。・小学校高学年向け・形式は「日本語文|英単語1,英単語2,英単語3」の形式で出力・日本語はカンマ区切りで単語に分解しておく・英単語は、日本語の並びに合わせて、対応する英単語をカンマ区切りで並べる（語順の正解とは限らない）・SVOの文で3個作成する";
         navigator.clipboard.writeText(prompt);
         alert("プロンプトをコピーしました！AIに貼り付けてください。");
     }
@@ -229,26 +212,25 @@
             const jpWords = parts[0].split(',');
             const engWords = parts[1] ? parts[1].split(',') : [];
             
-            const shuffledEng = shuffle([...engWords]);
-            
             const div = document.createElement('div');
             div.className = 'problem-item';
             
-            let jpCards = '';
-            jpWords.forEach(w => { jpCards += '<span class="word-card">' + w + '</span>'; });
-            
-            let engCards = '';
-            shuffledEng.forEach(w => { engCards += '<span class="eng-card">' + w + '</span>'; });
+            let wordGroups = '';
+            for(let i = 0; i < jpWords.length; i++) {
+                wordGroups += '<div class="word-group">' +
+                                '<div class="hint-text">' + (engWords[i] || '') + '</div>' +
+                                '<div class="word-card">' + jpWords[i] + '</div>' +
+                              '</div>';
+            }
             
             let answerRows = '';
-            engWords.forEach((_, i) => {
+            for(let i = 0; i < engWords.length; i++) {
                 answerRows += '<div class="answer-row"><div>(' + (i + 1) + ')</div><div class="answer-box"></div></div>';
-            });
+            }
             
             div.innerHTML = 
                 '<div class="number-box">' + (index + 1) + '</div>' +
-                '<div class="japanese-cards">' + jpCards + '</div>' +
-                '<div class="english-cards">' + engCards + '</div>' +
+                '<div style="display:inline-block;">' + wordGroups + '</div>' +
                 '<div class="answer-area">' + answerRows + '</div>';
             list.appendChild(div);
         });
