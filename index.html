@@ -59,6 +59,7 @@
             box-sizing: border-box;
             border: 5px solid #4a90e2;
             position: relative;
+            overflow: hidden;
         }
 
         .inner-border {
@@ -69,6 +70,7 @@
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
+            overflow: hidden; /* 枠内にはみ出さないように制限 */
         }
 
         h1 {
@@ -76,12 +78,14 @@
             font-size: 24pt;
             margin: 0 0 20px 0;
             color: #2c3e50;
+            flex-shrink: 0;
         }
 
         .name-section {
             text-align: right;
             font-size: 14pt;
             margin-bottom: 20px;
+            flex-shrink: 0;
         }
 
         .name-input {
@@ -91,12 +95,13 @@
 
         .problem-list {
             flex-grow: 1;
+            overflow-y: hidden; /* はみ出る分はカットして枠内に収める */
         }
 
         .problem-item {
-            margin-bottom: 50px;
+            margin-bottom: 30px;
             border-bottom: 1px dotted #ccc;
-            padding-bottom: 30px;
+            padding-bottom: 20px;
         }
 
         .number-box {
@@ -163,6 +168,7 @@
             border: 2px solid #4a90e2;
             border-radius: 8px;
             background-color: #f9f9f9;
+            flex-shrink: 0; /* 縮まないように設定 */
         }
 
         .review-title {
@@ -202,7 +208,7 @@
 
 <div class="page" id="printArea">
     <div class="inner-border">
-        <h1>英語をならべかえよう（ヒントあり）</h1>
+        <h1>英語並べ替え問題</h1>
         <div class="name-section">なまえ（<span class="name-input"></span>）</div>
         <div class="problem-list" id="problemList">
         </div>
